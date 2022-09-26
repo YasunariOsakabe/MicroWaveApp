@@ -42,27 +42,29 @@ class Microwave {
     }
     //タイマーをスタートさせるメソッド
     func startTimer(type: selectMode) {
-        if limit < 15 {
-            setUpTimer()
-            timer.invalidate() //timer = nilのイメージ。タイマーを止める
-            timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(updateTimer), userInfo: nil, repeats: true)
-            //↑1秒毎に自分のupdateTimerメソッドを繰り返し呼び出す。
-            switch type {
-                case .sevenHundredWatts:
-                    print("700Wを選択中: 上限温度は140度です")
-                    limitTemperature = 140 //上限温度
-                    risingTemperature = 3 //毎秒上昇する温度
-                case .sixHundredWatts:
-                    print("600Wを選択中: 上限温度は130度です")
-                    limitTemperature = 130
-                    risingTemperature = 5
-                case .fiveHundredWatts:
-                    print("500Wを選択中: 上限温度は120度です")
-                    limitTemperature = 120
-                    risingTemperature = 8
-            }
-        } else {
+        //if文からguard文に変更
+        guard limit < 15 else {
             print("15分以上のタイマーは設定できません")
+            return
+        }
+        setUpTimer()
+        timer.invalidate() //timer = nilのイメージ。タイマーを止める
+        timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(updateTimer), userInfo: nil, repeats: true)
+        //↑1秒毎に自分のupdateTimerメソッドを繰り返し呼び出す。
+        switch type {
+        case .sevenHundredWatts:
+            print("700Wを選択中: 上限温度は140度です")
+            limitTemperature = 140 //上限温度
+            risingTemperature = 3 //毎秒上昇する温度
+        case .sixHundredWatts:
+            print("600Wを選択中: 上限温度は130度です")
+            limitTemperature = 130
+            risingTemperature = 5
+        case .fiveHundredWatts:
+            print("500Wを選択中: 上限温度は120度です")
+            limitTemperature = 120
+            risingTemperature = 8
+            
         }
         
     }
@@ -81,15 +83,8 @@ class Microwave {
                 resetTimer()
                 print("チンっ！（カウントダウン終了）")
             }
-            if seconds < 10 { //10秒未満だったら、09, 08という風に表示する。
-                print("0\(seconds)")
-            } else {
-                print(seconds)
-            }
+            print(seconds)
             print(minutes)
-        } else {
-            print("上限温度に到達しました。現在の温度は\(temperature)度です")
-            resetTimer()
         }
         
     }
@@ -98,11 +93,7 @@ class Microwave {
     func setUpTimer() {
             seconds = 0
             minutes = limit
-            if seconds < 10 {
-                print("0\(seconds)")
-            } else {
-                print(seconds)
-            }
+            print(seconds)
             print(minutes)
     }
     //リセットボタン
@@ -116,4 +107,3 @@ class Microwave {
 let alarm = Microwave()
 alarm.limit = 10  //タイマーを入力
 alarm.startTimer(type: .sixHundredWatts)
-
